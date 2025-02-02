@@ -1,0 +1,40 @@
+name: Jekyll site CI
+
+on:
+  push:
+    branches:
+      - main  # Trigger the workflow on pushes to the main branch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest  # Use the latest Ubuntu environment
+
+    steps:
+      # Check out the repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Set up Ruby
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.1  # Use Ruby 3.1 (or the version compatible with your Jekyll setup)
+
+      # Install Jekyll and Bundler
+      - name: Install Jekyll and Bundler
+        run: gem install jekyll bundler
+
+      # Install dependencies
+      - name: Install dependencies
+        run: bundle install
+
+      # Build the Jekyll site
+      - name: Build with Jekyll
+        run: bundle exec jekyll build
+
+      # Deploy to GitHub Pages
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}  # GitHub token for authentication
+          publish_dir: ./_site  # The directory where Jekyll builds the site
